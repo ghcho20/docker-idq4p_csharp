@@ -22,4 +22,8 @@ echo ^> Launch a container(%CNAME%)
 for /F "tokens=* USEBACKQ" %%P in (`echo %CD%`) do (
     set WORKSPACE=%%P\ws
 )
-docker run --rm --name %CNAME% -v "%WORKSPACE%:/workspace" -it %INAME%
+
+set WORKSPACE_MNT=C:\Users\ContainerUser\workspace
+docker run --rm --name %CNAME% -v "%WORKSPACE%:%WORKSPACE_MNT%" -it %INAME%
+
+exit
