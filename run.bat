@@ -14,7 +14,7 @@ if [%INAME_CHECK%]==[] (
     docker build --rm -t %INAME% .
 )
 
-set CNAME=dnet
+set CNAME=idq4p
 if NOT [%1]==[] (
     set CNAME=%1
 )
