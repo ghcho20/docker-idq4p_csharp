@@ -14,7 +14,7 @@ if [%INAME_CHECK%]==[] (
     docker build --rm -t %INAME% .
 )
 
-set CNAME=dnet
+set CNAME=idq4p
 if NOT [%1]==[] (
     set CNAME=%1
 )
@@ -22,4 +22,11 @@ echo ^> Launch a container(%CNAME%)
 for /F "tokens=* USEBACKQ" %%P in (`echo %CD%`) do (
     set WORKSPACE=%%P\ws
 )
-docker run --rm --name %CNAME% -v "%WORKSPACE%:/workspace" -it %INAME%
+set WORKSPACE_MNT=/root/workspace
+set DOCKER=docker
+if [%SHELL%] == [/bin/bash] (
+	set DOCKER=winpty %DOCKER%
+)
+%DOCKER% run --rm --name %CNAME% -v "%WORKSPACE%:%WORKSPACE_MNT%" -w %WORKSPACE_MNT% -it %INAME%
+
+exit
