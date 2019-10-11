@@ -11,6 +11,7 @@
  */
 
 using System;
+using System.Diagnostics;
 using NetMQ;
 using NetMQ.Sockets;
 
@@ -23,7 +24,7 @@ namespace idq4p {
         }
 
         public static Command ReqAndRep(this RequestSocket sock, Command cmd) {
-            byte[] req = cmd.Pack();
+            byte[] req = cmd.PackToFrame();
             Console.WriteLine($"ReqAndRep: wrapper len= {req.Length}");
             string hex = BitConverter.ToString(req).Replace("-", "");
             Console.WriteLine($"val = {hex}");
@@ -31,7 +32,7 @@ namespace idq4p {
             var zmsg = new NetMQMessage();
             zmsg.Append(req);
             if (!sock.TrySendMultipartMessage(TimeSpan.FromSeconds(9), zmsg)) {
-                Console.WriteLine("Rx time-out");
+                Console.WriteLine("Tx time-out");
                 return null;
             }
             Console.WriteLine("ReqAndRep: Unpack");
@@ -40,7 +41,7 @@ namespace idq4p {
                 Console.WriteLine("Rx time-out");
                 return null;
             }
-            cmd.Unpack(rep);
+            cmd.UnpackFromFrame(rep);
             return cmd;
         }
     }

@@ -11,6 +11,8 @@
  */
 
 using System;
+using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 
 using MsgPack.Serialization;
@@ -32,22 +34,33 @@ namespace idq4p {
 
         public Command(uint ID) => this.cw = new CommandWrapper(ID);
 
-        public virtual byte[] Pack(byte[] cmd = null) {
-            Console.WriteLine($"> cmd len= {cmd.Length}");
-            string hex = BitConverter.ToString(cmd).Replace("-", "");
-            Console.WriteLine($"val = {hex}");
-            cw.cmd = cmd;
-            var ser = MessagePackSerializer.Get<CommandWrapper>();
+        public abstract byte[] PackToFrame();
+
+        public abstract void UnpackFromFrame(byte[] frame);
+
+        public virtual byte[] PackFrame([NotNull] MessagePackSerializer cmdSerializer) {
             var stream = new MemoryStream();
-            ser.Pack(stream, cw);
+            cmdSerializer.Pack(stream, this);
+
+            byte[] baCmd = stream.ToArray();
+            Console.WriteLine($"> cmd len= {baCmd.Length}");
+            string hex = BitConverter.ToString(baCmd).Replace("-", "");
+            Console.WriteLine($"val = {hex}");
+
+            cw.cmd = baCmd;
+            var cwSerializer = MessagePackSerializer.Get<CommandWrapper>();
+            stream.SetLength(0);
+            cwSerializer.Pack(stream, cw);
             return stream.ToArray();
         }
 
-        public virtual byte[] Unpack(byte[] frame) {
+        public virtual Command UnpackFrame(byte[] frame, [NotNull] MessagePackSerializer cmdSerializer) {
             var stream = new MemoryStream(frame);
-            var ser = MessagePackSerializer.Get<CommandWrapper>();
-            var cw = ser.Unpack(stream);
-            return cw.cmd;
+            var cwSerializer = MessagePackSerializer.Get<CommandWrapper>();
+            byte[] baCmd = cwSerializer.Unpack(stream).cmd;
+
+            stream = new MemoryStream(baCmd);
+            return (Command)cmdSerializer.Unpack(stream);
         }
     }
 }

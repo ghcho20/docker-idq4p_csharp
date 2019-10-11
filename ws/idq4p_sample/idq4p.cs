@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace idq4p
 {
@@ -22,7 +22,6 @@ namespace idq4p
                     break;
 
                 case "mon":
-                    MsgPackTest.test();
                     break;
             }
         }

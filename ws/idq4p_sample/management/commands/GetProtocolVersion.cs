@@ -25,22 +25,15 @@ namespace idq4p {
 
         public GetProtocolVersion() : base(1) {}
 
-        override public byte[] Pack(byte[] cmd = null) {
-            var ser = MessagePackSerializer.Get<GetProtocolVersion>();
-            var stream = new MemoryStream();
-            ser.Pack(stream, this);
-            return base.Pack(stream.ToArray());
+        public override byte[] PackToFrame() {
+            return PackFrame(MessagePackSerializer.Get<GetProtocolVersion>());
         }
 
-        override public byte[] Unpack(byte[] frame) {
-            byte[] cmd = base.Unpack(frame);
-            var stream = new MemoryStream(cmd);
-            var ser = MessagePackSerializer.Get<GetProtocolVersion>();
-            var c = ser.Unpack(stream);
-            this.maj = c.maj;
-            this.min = c.min;
-            this.rev = c.rev;
-            return cmd;
+        public override void UnpackFromFrame(byte[] frame) {
+            var cmd = (GetProtocolVersion) UnpackFrame(frame, MessagePackSerializer.Get<GetProtocolVersion>());
+            this.maj = cmd.maj;
+            this.min = cmd.min;
+            this.rev = cmd.rev;
         }
     }
 }
