@@ -18,10 +18,10 @@ namespace idq4p {
     class CommandRunner {
         public static void Run(string dstIp) {
             //ManagementChannel.PUTest(new GetProtocolVersion());
-            using (RequestSocket sock = ManagementChannel.Open(dstIp)) {
-                var cmd = new GetProtocolVersion();
-                var rep = (GetProtocolVersion) sock.ReqAndRep(cmd);
-                Console.WriteLine($"> protocol version: {rep.maj}.{rep.min}.{rep.rev}");
+            using RequestSocket sock = ManagementChannel.Open(dstIp);
+            var cmd = new GetProtocolVersion();
+            if (sock.ReqAndRep(cmd)) {
+                Console.WriteLine($"> protocol version: {cmd.maj}.{cmd.min}.{cmd.rev}");
             }
         }
     }

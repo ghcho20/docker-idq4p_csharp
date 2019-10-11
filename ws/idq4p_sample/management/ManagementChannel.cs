@@ -23,26 +23,23 @@ namespace idq4p {
             return new RequestSocket(req);
         }
 
-        public static Command ReqAndRep(this RequestSocket sock, Command cmd) {
+        public static bool ReqAndRep(this RequestSocket sock, Command cmd) {
             byte[] req = cmd.PackToFrame();
-            Console.WriteLine($"ReqAndRep: wrapper len= {req.Length}");
-            string hex = BitConverter.ToString(req).Replace("-", "");
-            Console.WriteLine($"val = {hex}");
 
             var zmsg = new NetMQMessage();
             zmsg.Append(req);
             if (!sock.TrySendMultipartMessage(TimeSpan.FromSeconds(9), zmsg)) {
                 Console.WriteLine("Tx time-out");
-                return null;
+                return false;
             }
             Console.WriteLine("ReqAndRep: Unpack");
-            byte[] rep = new byte[0];
+            byte[] rep;
             if (!sock.TryReceiveFrameBytes(TimeSpan.FromSeconds(9), out rep)) {
                 Console.WriteLine("Rx time-out");
-                return null;
+                return false;
             }
             cmd.UnpackFromFrame(rep);
-            return cmd;
+            return true;
         }
     }
 }
