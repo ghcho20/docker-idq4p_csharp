@@ -21,7 +21,8 @@ namespace idq4p
                     CommandRunner.Run(args[0]);
                     break;
 
-                case "mon":
+                case "sig":
+                    SigSubscriber.Run(args[0]);
                     break;
             }
         }

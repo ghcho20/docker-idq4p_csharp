@@ -16,11 +16,21 @@ using System.Collections.Generic;
 namespace idq4p {
     partial class CommandRunner {
         private static List<string> CmdRunList { get; set; } = new List<string>() {
+            //"GetSystemState",
             "Restart",
             "GetProtocolVersion",
-            "GetSoftwareVersion",
-            "GetBoardInformation",
-            "SubscribeSignals"
+            "GetSoftwareVersion 1",
+            "GetSoftwareVersion 2",
+            "GetSoftwareVersion 3",
+            "GetSoftwareVersion 4",
+            "GetSoftwareVersion 5",
+            "GetBoardInformation 1",
+            //"GetBoardInformation 2",
+            "GetBoardInformation 3",
+            //"GetBoardInformation 4",
+            //"GetBoardInformation 5",
+            "SubscribeSignal", // default = OnCpuTemperature_NewValue
+            "SubscribeSignal OnSystemState_Changed",
         };
     }
 }

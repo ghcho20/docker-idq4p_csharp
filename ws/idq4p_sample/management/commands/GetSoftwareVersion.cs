@@ -33,17 +33,12 @@ namespace idq4p {
             FgpaConfiguration
         }
 
-        public GetSoftwareVersion() : base(2) => swID = (uint)SWVer.BoardSupervisorService;
+        public GetSoftwareVersion() : base(2) => swID = (uint)SWVer.CommunicatorService;
+
+        public GetSoftwareVersion(string swID) : this() => this.swID = Convert.ToUInt32(swID);
 
         protected override MessagePackSerializer getSerializer() {
             return MessagePackSerializer.Get<GetSoftwareVersion>();
-        }
-        public override byte[] PackFrame() {
-            return base.PackFrame();
-        }
-
-        public override Command UnpackFrame(byte[] frame) {
-            return (GetSoftwareVersion) base.UnpackFrame(frame);
         }
 
         public override Command Set(Command cmd) {

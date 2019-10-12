@@ -28,13 +28,6 @@ namespace idq4p {
         protected override MessagePackSerializer getSerializer() {
             return MessagePackSerializer.Get<GetProtocolVersion>();
         }
-        public override byte[] PackFrame() {
-            return base.PackFrame();
-        }
-
-        public override Command UnpackFrame(byte[] frame) {
-            return (GetProtocolVersion) base.UnpackFrame(frame);
-        }
 
         public override Command Set(Command cmd) {
             var me = (GetProtocolVersion)cmd;

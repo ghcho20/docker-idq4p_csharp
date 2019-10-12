@@ -80,6 +80,6 @@ namespace idq4p {
             return cmd;
         }
 
-        public abstract Command Set(Command cmd);
+        public virtual Command Set(Command cmd) => this;
     }
 }

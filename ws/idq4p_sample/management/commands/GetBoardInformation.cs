@@ -33,15 +33,10 @@ namespace idq4p {
 
         public GetBoardInformation() : base(3) => bdID = (uint)BdID.QkeComE;
 
+        public GetBoardInformation(string bdID) : this() => this.bdID = Convert.ToUInt32(bdID);
+
         protected override MessagePackSerializer getSerializer() {
             return MessagePackSerializer.Get<GetBoardInformation>();
-        }
-        public override byte[] PackFrame() {
-            return base.PackFrame();
-        }
-
-        public override Command UnpackFrame(byte[] frame) {
-            return (GetBoardInformation) base.UnpackFrame(frame);
         }
 
         public override Command Set(Command cmd) {

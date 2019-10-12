@@ -26,17 +26,23 @@ namespace idq4p {
         public static void Run(string dstIp) {
             using RequestSocket sock = ManagementChannel.Open(dstIp);
 
-            CmdRunList.ForEach(cls => {
-                Type cmdType = Type.GetType($"idq4p.{cls}");
+            CmdRunList.ForEach(cline => {
+                string[] cls_arg = cline.Split(' ');
+                Type cmdType = Type.GetType($"idq4p.{cls_arg[0]}");
                 try {
-                    var cmd = (Command)Activator.CreateInstance(cmdType);
+                    Command cmd;
+                    if (cls_arg.Length == 1) {
+                        cmd = (Command)Activator.CreateInstance(cmdType);
+                    } else {
+                        cmd = (Command)Activator.CreateInstance(cmdType, new Object[] {cls_arg[1]});
+                    }
 
-                    startOfCommand(cmd.GetType().Name);
+                    startOfCommand(cline);
                     if (sock.ReqAndRep(cmd)) {
                         Console.WriteLine($"== {cmd.ToString()} ==");
                     }
                 } catch {
-                    Console.WriteLine($"@@ Failed to load command class: {cls} @@");
+                    Console.WriteLine($"@@ Failed to load command class: {cline} @@");
                 }
             });
         }
