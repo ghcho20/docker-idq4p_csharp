@@ -15,7 +15,7 @@ namespace idq4p
                 return;
             }
 
-            Console.WriteLine("+++++++++++++++++++++++++++++++++");
+            Console.WriteLine("-----------------------------------------");
             switch(args[1]) {
                 case "mgmt":
                     CommandRunner.Run(args[0]);

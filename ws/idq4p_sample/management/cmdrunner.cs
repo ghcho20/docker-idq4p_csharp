@@ -16,12 +16,17 @@ using NetMQ.Sockets;
 
 namespace idq4p {
     class CommandRunner {
+        private static void startOfCommand(string cmdName) {
+            Console.WriteLine("-----------------------------------------");
+            Console.WriteLine($"** {cmdName} **");
+        }
+
         public static void Run(string dstIp) {
-            //ManagementChannel.PUTest(new GetProtocolVersion());
             using RequestSocket sock = ManagementChannel.Open(dstIp);
             var cmd = new GetProtocolVersion();
+            startOfCommand(cmd.GetType().Name);
             if (sock.ReqAndRep(cmd)) {
-                Console.WriteLine($"> protocol version: {cmd.maj}.{cmd.min}.{cmd.rev}");
+                Console.WriteLine($"== {cmd.ToString()} ==");
             }
         }
     }

@@ -18,27 +18,28 @@ using NetMQ.Sockets;
 namespace idq4p {
     public static class ManagementChannel {
         public static RequestSocket Open(string dstIp) {
-            string req = ">tcp://" + dstIp + ":5561";
+            string req = "tcp://" + dstIp + ":5561";
             Console.WriteLine($"connect to: {req}");
             return new RequestSocket(req);
         }
 
         public static bool ReqAndRep(this RequestSocket sock, Command cmd) {
-            byte[] req = cmd.PackToFrame();
+            Console.WriteLine(" > ReqAndRep: Pack zmq msg");
+            byte[] req = cmd.PackFrame();
 
             var zmsg = new NetMQMessage();
             zmsg.Append(req);
             if (!sock.TrySendMultipartMessage(TimeSpan.FromSeconds(9), zmsg)) {
-                Console.WriteLine("Tx time-out");
+                Console.WriteLine(" x: Tx time-out");
                 return false;
             }
-            Console.WriteLine("ReqAndRep: Unpack");
-            byte[] rep;
-            if (!sock.TryReceiveFrameBytes(TimeSpan.FromSeconds(9), out rep)) {
-                Console.WriteLine("Rx time-out");
+            Console.WriteLine(" < ReqAndRep: Unpack zmq msg");
+            if (!sock.TryReceiveFrameBytes(TimeSpan.FromSeconds(9), out byte[] rep))
+            {
+                Console.WriteLine(" x: Rx time-out");
                 return false;
             }
-            cmd.UnpackFromFrame(rep);
+            cmd.UnpackFrame(rep);
             return true;
         }
     }
