@@ -27,7 +27,7 @@ namespace idq4p {
 
         [MessagePackMember(0)] public uint ID { get; set; }
         [MessagePackMember(1)] public uint direction { get; set; } = 1; // request
-        [MessagePackMember(2)] public List<uint> cmd { get; set; } = new List<uint>();
+        [MessagePackMember(2)] public List<ulong> cmd { get; set; } = new List<ulong>();
     }
 
     public abstract class Command {
