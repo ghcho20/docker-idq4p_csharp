@@ -23,18 +23,18 @@ namespace idq4p {
             return new RequestSocket(req);
         }
 
-        public static bool ReqAndRep(this RequestSocket sock, Command cmd) {
+        public static bool ReqAndRep(this RequestSocket sock, Command cmd, int timo=9) {
             Console.WriteLine(" > ReqAndRep: Pack zmq msg");
             byte[] req = cmd.PackFrame();
 
             var zmsg = new NetMQMessage();
             zmsg.Append(req);
-            if (!sock.TrySendMultipartMessage(TimeSpan.FromSeconds(9), zmsg)) {
+            if (!sock.TrySendMultipartMessage(TimeSpan.FromSeconds(timo), zmsg)) {
                 Console.WriteLine(" x: Tx time-out");
                 return false;
             }
             Console.WriteLine(" < ReqAndRep: Unpack zmq msg");
-            if (!sock.TryReceiveFrameBytes(TimeSpan.FromSeconds(9), out byte[] rep))
+            if (!sock.TryReceiveFrameBytes(TimeSpan.FromSeconds(timo), out byte[] rep))
             {
                 Console.WriteLine(" x: Rx time-out");
                 return false;

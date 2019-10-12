@@ -17,7 +17,6 @@ namespace idq4p {
     partial class CommandRunner {
         private static List<string> CmdRunList { get; set; } = new List<string>() {
             "GetSystemState",
-            //"Restart",
             "GetProtocolVersion",
             "GetSoftwareVersion 1",
             "GetSoftwareVersion 2",

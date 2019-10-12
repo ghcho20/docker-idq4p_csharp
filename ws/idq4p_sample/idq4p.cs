@@ -9,9 +9,11 @@ namespace idq4p
             if (args.Length != 2) {
                 Console.WriteLine("> invalid options");
                 Console.WriteLine("> usage:");
-                Console.WriteLine("  > dotnet run <clavis3 IP> <mode = mgmt|mon>");
-                Console.WriteLine("    mgmt = request commands over Management channel");
-                Console.WriteLine("    mon  = subscibe to Signal and Key channel");
+                Console.WriteLine("  > dotnet run <clavis3 IP> <mode = mgmt|sig|key|restart|check>");
+                Console.WriteLine("    mgmt    = request commands over Management channel");
+                Console.WriteLine("    sig     = monitor Signal channel");
+                Console.WriteLine("    key     = monitor Key channel");
+                Console.WriteLine("    restart = restart system");
                 return;
             }
 
@@ -23,6 +25,17 @@ namespace idq4p
 
                 case "sig":
                     SigSubscriber.Run(args[0]);
+                    break;
+
+                case "key":
+                    break;
+
+                case "restart":
+                    CommandRunner.Restart(args[0]);
+                    break;
+
+                case "check":
+                    CommandRunner.CheckSystem(args[0]);
                     break;
             }
         }

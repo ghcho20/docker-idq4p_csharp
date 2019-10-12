@@ -12,6 +12,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Threading;
 
 using NetMQ;
 using NetMQ.Sockets;
@@ -47,5 +48,23 @@ namespace idq4p {
                 }
             });
         }
+
+        public static void Restart(string dstIp) {
+            using RequestSocket sock = ManagementChannel.Open(dstIp);
+
+            Command cmd = new Restart();
+            startOfCommand("Restart System");
+            sock.ReqAndRep(cmd, 3);
+        }
+
+        public static void CheckSystem(string dstIp) {
+            using RequestSocket sock = ManagementChannel.Open(dstIp);
+
+            Command cmd = new GetSystemState();
+            startOfCommand("Check System State");
+            if (sock.ReqAndRep(cmd)) {
+                Console.WriteLine($"== {cmd.ToString()} ==");
+            }
+    }
     }
 }
