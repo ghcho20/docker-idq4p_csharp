@@ -11,11 +11,13 @@
  */
 
 using System;
+using System.Collections.Generic;
+
 using NetMQ;
 using NetMQ.Sockets;
 
 namespace idq4p {
-    class CommandRunner {
+    partial class CommandRunner {
         private static void startOfCommand(string cmdName) {
             Console.WriteLine("-----------------------------------------");
             Console.WriteLine($"** {cmdName} **");
@@ -23,11 +25,20 @@ namespace idq4p {
 
         public static void Run(string dstIp) {
             using RequestSocket sock = ManagementChannel.Open(dstIp);
-            var cmd = new GetProtocolVersion();
-            startOfCommand(cmd.GetType().Name);
-            if (sock.ReqAndRep(cmd)) {
-                Console.WriteLine($"== {cmd.ToString()} ==");
-            }
+
+            CmdRunList.ForEach(cls => {
+                Type cmdType = Type.GetType($"idq4p.{cls}");
+                try {
+                    var cmd = (Command)Activator.CreateInstance(cmdType);
+
+                    startOfCommand(cmd.GetType().Name);
+                    if (sock.ReqAndRep(cmd)) {
+                        Console.WriteLine($"== {cmd.ToString()} ==");
+                    }
+                } catch {
+                    Console.WriteLine($"@@ Failed to load command class: {cls} @@");
+                }
+            });
         }
     }
 }
