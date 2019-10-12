@@ -29,20 +29,21 @@ namespace idq4p {
             CmdRunList.ForEach(cline => {
                 string[] cls_arg = cline.Split(' ');
                 Type cmdType = Type.GetType($"idq4p.{cls_arg[0]}");
+                Command cmd;
                 try {
-                    Command cmd;
                     if (cls_arg.Length == 1) {
                         cmd = (Command)Activator.CreateInstance(cmdType);
                     } else {
                         cmd = (Command)Activator.CreateInstance(cmdType, new Object[] {cls_arg[1]});
                     }
-
-                    startOfCommand(cline);
-                    if (sock.ReqAndRep(cmd)) {
-                        Console.WriteLine($"== {cmd.ToString()} ==");
-                    }
                 } catch {
                     Console.WriteLine($"@@ Failed to load command class: {cline} @@");
+                    return;
+                }
+
+                startOfCommand(cline);
+                if (sock.ReqAndRep(cmd)) {
+                    Console.WriteLine($"== {cmd.ToString()} ==");
                 }
             });
         }

@@ -46,12 +46,14 @@ namespace idq4p {
             var cw = new CommandWrapper(ID);
             var stream = new MemoryStream();
             var cmdSerializer = getSerializer();
-            cmdSerializer.Pack(stream, this);
-            byte[] baCmd = stream.ToArray();
-            printToHex("cmd", baCmd);
+            if (cmdSerializer != null) {
+                cmdSerializer.Pack(stream, this);
+                byte[] baCmd = stream.ToArray();
+                printToHex("cmd", baCmd);
 
-            foreach(byte c in baCmd) cw.cmd.Add(c);
-            Console.WriteLine($"  + n_cmds = {cw.cmd.Count}");
+                foreach(byte c in baCmd) cw.cmd.Add(c);
+                Console.WriteLine($"  + n_cmds = {cw.cmd.Count}");
+            }
             var cwSerializer = MessagePackSerializer.Get<CommandWrapper>();
             stream.SetLength(0);
             cwSerializer.Pack(stream, cw);
