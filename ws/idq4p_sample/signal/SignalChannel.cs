@@ -33,9 +33,12 @@ namespace idq4p {
             sock.SubscribeToAnyTopic();
 
             while (true) {
-                Console.WriteLine("---------- Wait for Signal ----------");
+                Console.WriteLine("------------------ Wait for Signal ------------------");
                 byte[] frame = sock.ReceiveFrameBytes();
-                Signal.UnpackFrame(frame);
+                var sig = Signal.UnpackFrame(frame);
+                if (sig != null) {
+                    Console.WriteLine($"  + {sig}");
+                }
             }
         }
     }

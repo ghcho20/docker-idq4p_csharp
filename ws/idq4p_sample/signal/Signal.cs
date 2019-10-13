@@ -23,12 +23,12 @@ namespace idq4p {
     public sealed class SignalWrapper {
         public SignalWrapper() {} // Default Ctor is a MUST for Serializer Unpacker
 
-        [MessagePackMember(0)] public uint ID { get; set; }
-        [MessagePackMember(1)] public List<uint> cmd { get; set; } = new List<uint>();
+        [MessagePackMember(0)] public Int32 ID { get; set; }
+        [MessagePackMember(1)] public List<UInt32> sig { get; set; } = new List<UInt32>();
     }
 
     public abstract partial class Signal {
-        private readonly ID eID;
+        protected readonly ID eID;
 
         public Signal(ID eID) {
             this.eID = eID;
@@ -36,19 +36,34 @@ namespace idq4p {
 
         protected abstract MessagePackSerializer getSerializer();
 
-        public static void UnpackFrame(byte[] frame) {
-            printToHex("sig frame", frame);
+        public static Signal UnpackFrame(byte[] frame) {
+            //Util.WriteBytes("sig frame", frame);
             var swSerializer = MessagePackSerializer.Get<SignalWrapper>();
             var stream = new MemoryStream(frame);
             var sw = swSerializer.Unpack(stream);
 
             ID eID = (ID)sw.ID;
-            Console.WriteLine($" signal[{eID}] received");
-        }
+            Console.WriteLine($" > signal[{eID}] received");
 
-        private static void printToHex(string ID, byte[] bytes) {
-            string hex = BitConverter.ToString(bytes).Replace("-", "");
-            Console.WriteLine($"  + {ID}[{bytes.Length}]:{hex}");
+            if (sw.sig.Count > 0) {
+                Type sigCls = Type.GetType($"idq4p.{eID}");
+                try {
+                    Signal sig = (Signal)Activator.CreateInstance(sigCls);
+
+                    byte[] baSig = new byte[sw.sig.Count]; int si = 0;
+                    sw.sig.ForEach( b => baSig[si++] = (byte)(0xff & b));
+
+                    var sigSerializer = sig.getSerializer();
+                    stream = new MemoryStream(baSig);
+                    sig = (Signal)sigSerializer.Unpack(stream);
+
+                    return sig;
+                } catch {
+                    Console.WriteLine("  - Nested signal handler not defined");
+                    Console.WriteLine($"  - {sw.sig.Count} signal bytes discarded");
+                }
+            }
+            return null;
         }
     }
 }

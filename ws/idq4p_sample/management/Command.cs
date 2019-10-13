@@ -37,11 +37,6 @@ namespace idq4p {
 
         protected abstract MessagePackSerializer getSerializer();
 
-        private static void printToHex(string ID, byte[] bytes) {
-            string hex = BitConverter.ToString(bytes).Replace("-", "");
-            Console.WriteLine($"  + {ID}[{bytes.Length}]:{hex}");
-        }
-
         public virtual byte[] PackFrame() {
             var cw = new CommandWrapper(ID);
             var stream = new MemoryStream();
@@ -49,7 +44,7 @@ namespace idq4p {
             if (cmdSerializer != null) {
                 cmdSerializer.Pack(stream, this);
                 byte[] baCmd = stream.ToArray();
-                printToHex("cmd", baCmd);
+                Util.WriteBytes("cmd", baCmd);
 
                 foreach(byte c in baCmd) cw.cmd.Add(c);
                 Console.WriteLine($"  + n_cmds = {cw.cmd.Count}");
@@ -59,22 +54,22 @@ namespace idq4p {
             cwSerializer.Pack(stream, cw);
 
             byte[] fr = stream.ToArray();
-            printToHex("req", fr);
+            Util.WriteBytes("req", fr);
 
             return fr;
         }
 
         public virtual Command UnpackFrame(byte[] frame) {
-            printToHex("rep", frame);
+            Util.WriteBytes("rep", frame);
             var cwSerializer = MessagePackSerializer.Get<CommandWrapper>();
             var stream = new MemoryStream(frame);
             var cwr = cwSerializer.Unpack(stream);
             Console.WriteLine($"  + n_cmds= {cwr.cmd.Count}");
             if (cwr.cmd.Count > 0) {
-                byte[] baCmd = new byte[cwr.cmd.Count];
-                cwr.cmd.ForEach( a => baCmd[cwr.cmd.IndexOf(a)] = (byte)(0xff & a));
+                byte[] baCmd = new byte[cwr.cmd.Count]; int ci = 0;
+                cwr.cmd.ForEach( a => baCmd[ci++] = (byte)(0xff & a));
 
-                printToHex("cmd", baCmd);
+                Util.WriteBytes("cmd", baCmd);
                 stream = new MemoryStream(baCmd);
                 var cmdSerializer = getSerializer();
                 //return (Command)cmdSerializer.Unpack(stream);

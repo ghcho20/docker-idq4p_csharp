@@ -57,7 +57,7 @@ namespace idq4p {
             OnDataDetector_BiasCurrent_NewValue,
             OnDataDetector_BiasCurrent_AbsoluteOutOfRange,
             OnDataDetector_BiasCurrent_OperationOutOfRange,
-            OnMonitortaDetector_Temperature_NewValue,
+            OnMonitorDetector_Temperature_NewValue,
             OnMonitorDetector_Temperature_AbsoluteOutOfRange,
             OnMonitorDetector_Temperature_OperationOutOfRange,
             OnMonitorDetector_BiasCurrent_NewValue,

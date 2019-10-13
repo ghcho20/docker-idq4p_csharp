@@ -24,7 +24,8 @@ namespace idq4p
                     break;
 
                 case "sig":
-                    SigSubscriber.Run(args[0]);
+                    //SigSubscriber.Run(args[0]);
+                    MsgPackTest.signal_test();
                     break;
 
                 case "key":
@@ -38,6 +39,13 @@ namespace idq4p
                     CommandRunner.CheckSystem(args[0]);
                     break;
             }
+        }
+    }
+
+    public class Util {
+        public static void WriteBytes(string ID, byte[] bytes) {
+            string hex = BitConverter.ToString(bytes).Replace("-", "");
+            Console.WriteLine($"  + {ID}[{bytes.Length}]:{hex}");
         }
     }
 }

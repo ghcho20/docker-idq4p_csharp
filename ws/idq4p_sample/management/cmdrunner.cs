@@ -29,13 +29,13 @@ namespace idq4p {
 
             CmdRunList.ForEach(cline => {
                 string[] cls_arg = cline.Split(' ');
-                Type cmdType = Type.GetType($"idq4p.{cls_arg[0]}");
+                Type cmdCls = Type.GetType($"idq4p.{cls_arg[0]}");
                 Command cmd;
                 try {
                     if (cls_arg.Length == 1) {
-                        cmd = (Command)Activator.CreateInstance(cmdType);
+                        cmd = (Command)Activator.CreateInstance(cmdCls);
                     } else {
-                        cmd = (Command)Activator.CreateInstance(cmdType, new Object[] {cls_arg[1]});
+                        cmd = (Command)Activator.CreateInstance(cmdCls, new Object[] {cls_arg[1]});
                     }
                 } catch {
                     Console.WriteLine($"@@ Failed to load command class: {cline} @@");
