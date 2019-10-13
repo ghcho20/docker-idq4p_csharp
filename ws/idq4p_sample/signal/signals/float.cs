@@ -18,14 +18,16 @@ using System.Collections.Generic;
 using MsgPack.Serialization;
 
 namespace idq4p {
-    public class OnMonitorDetector_Temperature_NewValue : Signal {
+    public class BodyFloat : Signal {
         [MessagePackMember(0)] public Single value { get; set; }
 
-        public OnMonitorDetector_Temperature_NewValue() : base(ID.OnMonitorDetector_Temperature_NewValue) {}
-
         protected override MessagePackSerializer getSerializer() =>
-            MessagePackSerializer.Get<OnMonitorDetector_Temperature_NewValue>();
+            MessagePackSerializer.Get<BodyFloat>();
 
-        public override string ToString() => $"temperature= {value}";
+        public override string ToString() => $"value= {value}";
     }
+
+    public class OnIF_Temperature_NewValue : BodyFloat { }
+    public class OnMonitorDetector_Temperature_NewValue : BodyFloat { }
+    public class OnFilter_Temperature_NewValue : BodyFloat { }
 }

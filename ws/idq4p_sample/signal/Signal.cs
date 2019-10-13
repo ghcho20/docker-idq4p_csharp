@@ -28,12 +28,6 @@ namespace idq4p {
     }
 
     public abstract partial class Signal {
-        protected readonly ID eID;
-
-        public Signal(ID eID) {
-            this.eID = eID;
-        }
-
         protected abstract MessagePackSerializer getSerializer();
 
         public static Signal UnpackFrame(byte[] frame) {

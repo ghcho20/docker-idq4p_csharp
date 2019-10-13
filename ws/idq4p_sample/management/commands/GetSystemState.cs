@@ -21,19 +21,6 @@ namespace idq4p {
     public class GetSystemState : Command {
         [MessagePackMember(0)] public uint sysState { get; set; }
 
-        private enum SystemState {
-            PoweredOff,
-            PoweringOn,
-            ExecutingSelfTest,
-            ExecutingGeneralInit,
-            ExecutingSecurityInit,
-            Running,
-            PoweringOff,
-            HandlingError,
-            UpdatingSoftware,
-            Zeroizing
-        }
-
         public GetSystemState() : base(108) { }
 
         protected override MessagePackSerializer getSerializer() {
