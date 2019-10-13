@@ -36,4 +36,6 @@ namespace idq4p {
             return $"system state= {st}";
         }
     }
+
+    public class OnTotalDetectionCount_NewValue : BodyFloat { }
 }

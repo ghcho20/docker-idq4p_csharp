@@ -30,4 +30,16 @@ namespace idq4p {
     public class OnIF_Temperature_NewValue : BodyFloat { }
     public class OnMonitorDetector_Temperature_NewValue : BodyFloat { }
     public class OnFilter_Temperature_NewValue : BodyFloat { }
+    public class OnCpuTemperature_NewValue : BodyFloat { }
+    public class OnLaser_Temperature_NewValue : BodyFloat { }
+    public class OnLaser_Power_NewValue : BodyFloat { }
+    public class OnLaser_TECCurrent_NewValue : BodyFloat { }
+    public class OnDataDetector_Temperature_NewValue : BodyFloat { }
+    public class OnDataDetector_BiasCurrent_NewValue : BodyFloat { }
+    public class OnMonitortaDetector_Temperature_NewValue : BodyFloat { }
+    public class OnMonitorDetector_BiasCurrent_NewValue : BodyFloat { }
+    public class OnQber_NewValue : BodyFloat { }
+    public class OnVisibility_NewValue : BodyFloat { }
+    public class OnKeyRate_NewValue : BodyFloat { }
+    public class OnCompressionRatio_NewValue : BodyFloat { }
 }
