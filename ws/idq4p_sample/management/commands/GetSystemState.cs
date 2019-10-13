@@ -18,27 +18,37 @@ using NetMQ.Sockets;
 using MsgPack.Serialization;
 
 namespace idq4p {
-    public class GetProtocolVersion : Command {
-        [MessagePackMember(0)] public uint maj { get; set; }
-        [MessagePackMember(1)] public uint min { get; set; }
-        [MessagePackMember(2)] public uint rev { get; set; }
+    public class GetSystemState : Command {
+        [MessagePackMember(0)] public uint sysState { get; set; }
 
-        public GetProtocolVersion() : base(1) { }
+        private enum SystemState {
+            PoweredOff,
+            PoweringOn,
+            ExecutingSelfTest,
+            ExecutingGeneralInit,
+            ExecutingSecurityInit,
+            Running,
+            PoweringOff,
+            HandlingError,
+            UpdatingSoftware,
+            Zeroizing
+        }
+
+        public GetSystemState() : base(108) { }
 
         protected override MessagePackSerializer getSerializer() {
-            return MessagePackSerializer.Get<GetProtocolVersion>();
+            return MessagePackSerializer.Get<GetSystemState>();
         }
 
         public override Command Set(Command cmd) {
-            var me = (GetProtocolVersion)cmd;
-            this.maj = me.maj;
-            this.min = me.min;
-            this.rev = me.rev;
+            var me = (GetSystemState)cmd;
+            this.sysState = me.sysState;
             return this;
         }
 
         public override string ToString() {
-                return ($"idq4p ver: {maj}.{min}.{rev}");
+                SystemState sysState = (SystemState)this.sysState;
+                return ($"System State = {sysState}");
         }
     }
 }

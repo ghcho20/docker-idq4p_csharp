@@ -11,43 +11,81 @@
  */
 
 using System;
+using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
+using System.Collections;
+using System.Collections.Generic;
 
 using MsgPack.Serialization;
 
 namespace idq4p {
     public sealed class CommandWrapper {
-        public CommandWrapper(uint iD)
-        {
-            ID = iD;
-        }
+        public CommandWrapper() {} // Default Ctor is a MUST for Serializer Unpacker
 
-        public uint ID { get; set; }
-        public uint direction { get; set; } = 1; // request
-        public byte[] cmd { get; set; }
+        public CommandWrapper(uint ID) { this.ID = ID; }
+
+        [MessagePackMember(0)] public uint ID { get; set; }
+        [MessagePackMember(1)] public uint direction { get; set; } = 1; // request
+        [MessagePackMember(2)] public List<ulong> cmd { get; set; } = new List<ulong>();
     }
 
     public abstract class Command {
-        protected readonly CommandWrapper cw;
+        private readonly uint ID = 1;
 
-        public Command(uint ID) => this.cw = new CommandWrapper(ID);
+        public Command(uint ID) => this.ID = ID;
 
-        public virtual byte[] Pack(byte[] cmd = null) {
-            Console.WriteLine($"> cmd len= {cmd.Length}");
-            string hex = BitConverter.ToString(cmd).Replace("-", "");
-            Console.WriteLine($"val = {hex}");
-            cw.cmd = cmd;
-            var ser = MessagePackSerializer.Get<CommandWrapper>();
+        protected abstract MessagePackSerializer getSerializer();
+
+        private static void printToHex(string ID, byte[] bytes) {
+            string hex = BitConverter.ToString(bytes).Replace("-", "");
+            Console.WriteLine($"  + {ID}[{bytes.Length}]:{hex}");
+        }
+
+        public virtual byte[] PackFrame() {
+            var cw = new CommandWrapper(ID);
             var stream = new MemoryStream();
-            ser.Pack(stream, cw);
-            return stream.ToArray();
+            var cmdSerializer = getSerializer();
+            if (cmdSerializer != null) {
+                cmdSerializer.Pack(stream, this);
+                byte[] baCmd = stream.ToArray();
+                printToHex("cmd", baCmd);
+
+                foreach(byte c in baCmd) cw.cmd.Add(c);
+                Console.WriteLine($"  + n_cmds = {cw.cmd.Count}");
+            }
+            var cwSerializer = MessagePackSerializer.Get<CommandWrapper>();
+            stream.SetLength(0);
+            cwSerializer.Pack(stream, cw);
+
+            byte[] fr = stream.ToArray();
+            printToHex("req", fr);
+
+            return fr;
         }
 
-        public virtual byte[] Unpack(byte[] frame) {
+        public virtual Command UnpackFrame(byte[] frame) {
+            printToHex("rep", frame);
+            var cwSerializer = MessagePackSerializer.Get<CommandWrapper>();
             var stream = new MemoryStream(frame);
-            var ser = MessagePackSerializer.Get<CommandWrapper>();
-            var cw = ser.Unpack(stream);
-            return cw.cmd;
+            var cwr = cwSerializer.Unpack(stream);
+            Console.WriteLine($"  + n_cmds= {cwr.cmd.Count}");
+            if (cwr.cmd.Count > 0) {
+                byte[] baCmd = new byte[cwr.cmd.Count];
+                cwr.cmd.ForEach( a => baCmd[cwr.cmd.IndexOf(a)] = (byte)(0xff & a));
+
+                printToHex("cmd", baCmd);
+                stream = new MemoryStream(baCmd);
+                var cmdSerializer = getSerializer();
+                //return (Command)cmdSerializer.Unpack(stream);
+                var cmd = (Command)cmdSerializer.Unpack(stream);
+                Set(cmd);
+                return cmd;
+            } else {
+                return this;
+            }
         }
+
+        public virtual Command Set(Command cmd) => this;
     }
 }

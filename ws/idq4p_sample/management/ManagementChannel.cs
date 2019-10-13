@@ -11,37 +11,36 @@
  */
 
 using System;
+using System.Diagnostics;
 using NetMQ;
 using NetMQ.Sockets;
 
 namespace idq4p {
     public static class ManagementChannel {
         public static RequestSocket Open(string dstIp) {
-            string req = ">tcp://" + dstIp + ":5561";
+            string req = "tcp://" + dstIp + ":5561";
             Console.WriteLine($"connect to: {req}");
             return new RequestSocket(req);
         }
 
-        public static Command ReqAndRep(this RequestSocket sock, Command cmd) {
-            byte[] req = cmd.Pack();
-            Console.WriteLine($"ReqAndRep: wrapper len= {req.Length}");
-            string hex = BitConverter.ToString(req).Replace("-", "");
-            Console.WriteLine($"val = {hex}");
+        public static bool ReqAndRep(this RequestSocket sock, Command cmd, int timo=9) {
+            Console.WriteLine(" > ReqAndRep: Pack zmq msg");
+            byte[] req = cmd.PackFrame();
 
             var zmsg = new NetMQMessage();
             zmsg.Append(req);
-            if (!sock.TrySendMultipartMessage(TimeSpan.FromSeconds(9), zmsg)) {
-                Console.WriteLine("Rx time-out");
-                return null;
+            if (!sock.TrySendMultipartMessage(TimeSpan.FromSeconds(timo), zmsg)) {
+                Console.WriteLine(" x: Tx time-out");
+                return false;
             }
-            Console.WriteLine("ReqAndRep: Unpack");
-            byte[] rep = new byte[0];
-            if (!sock.TryReceiveFrameBytes(TimeSpan.FromSeconds(9), out rep)) {
-                Console.WriteLine("Rx time-out");
-                return null;
+            Console.WriteLine(" < ReqAndRep: Unpack zmq msg");
+            if (!sock.TryReceiveFrameBytes(TimeSpan.FromSeconds(timo), out byte[] rep))
+            {
+                Console.WriteLine(" x: Rx time-out");
+                return false;
             }
-            cmd.Unpack(rep);
-            return cmd;
+            cmd.UnpackFrame(rep);
+            return true;
         }
     }
 }

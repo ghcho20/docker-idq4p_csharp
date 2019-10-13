@@ -11,23 +11,22 @@
  */
 
 using System;
-using System.Collections.Generic;
 using System.Threading;
 
 using NetMQ;
 using NetMQ.Sockets;
 
 namespace idq4p {
-    partial class CommandRunner {
-        private static void startOfCommand(string cmdName) {
+    partial class SigSubscriber {
+        private static void LogHeader(string headline) {
             Console.WriteLine("-----------------------------------------");
-            Console.WriteLine($"** {cmdName} **");
+            Console.WriteLine($"** {headline} **");
         }
 
-        public static void Run(string dstIp) {
+        public static void SubscribeSignals(string dstIp) {
             using RequestSocket sock = ManagementChannel.Open(dstIp);
 
-            CmdRunList.ForEach(cline => {
+            SubscriptionList.ForEach(cline => {
                 string[] cls_arg = cline.Split(' ');
                 Type cmdType = Type.GetType($"idq4p.{cls_arg[0]}");
                 Command cmd;
@@ -42,29 +41,22 @@ namespace idq4p {
                     return;
                 }
 
-                startOfCommand(cline);
+                LogHeader(cline);
                 if (sock.ReqAndRep(cmd)) {
                     Console.WriteLine($"== {cmd.ToString()} ==");
                 }
             });
         }
 
-        public static void Restart(string dstIp) {
-            using RequestSocket sock = ManagementChannel.Open(dstIp);
+        public static void Run(string dstIp) {
+            SubscribeSignals(dstIp);
+            Console.WriteLine("-----------------------------------------");
+            Console.WriteLine("-----------------------------------------");
+            Console.WriteLine();
 
-            Command cmd = new Restart();
-            startOfCommand("Restart System");
-            sock.ReqAndRep(cmd, 3);
+            SubscriberSocket sock = SignalChannel.Open(dstIp);
+            LogHeader("start receiving signals");
+            sock.ReceiveSignal();
         }
-
-        public static void CheckSystem(string dstIp) {
-            using RequestSocket sock = ManagementChannel.Open(dstIp);
-
-            Command cmd = new GetSystemState();
-            startOfCommand("Check System State");
-            if (sock.ReqAndRep(cmd)) {
-                Console.WriteLine($"== {cmd.ToString()} ==");
-            }
-    }
     }
 }
