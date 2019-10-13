@@ -24,8 +24,7 @@ namespace idq4p
                     break;
 
                 case "sig":
-                    //SigSubscriber.Run(args[0]);
-                    MsgPackTest.signal_test();
+                    SigSubscriber.Run(args[0]);
                     break;
 
                 case "key":
