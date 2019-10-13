@@ -20,7 +20,7 @@ using MsgPack.Serialization;
 
 namespace idq4p {
     public class GetBoardInformation : Command {
-        [MessagePackMember(0)] public uint bdID { get; set; }
+        [MessagePackMember(0)] public UInt32 bdID { get; set; }
         [MessagePackMember(1)] public StringBuilder bdInfo { get; set; } = new StringBuilder();
 
         private enum BdID {
@@ -31,7 +31,7 @@ namespace idq4p {
             QkeFpga
         }
 
-        public GetBoardInformation() : base(3) => bdID = (uint)BdID.QkeComE;
+        public GetBoardInformation() : base(3) => bdID = (UInt32)BdID.QkeComE;
 
         public GetBoardInformation(string bdID) : this() => this.bdID = Convert.ToUInt32(bdID);
 

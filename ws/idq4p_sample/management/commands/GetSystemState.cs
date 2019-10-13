@@ -19,7 +19,7 @@ using MsgPack.Serialization;
 
 namespace idq4p {
     public class GetSystemState : Command {
-        [MessagePackMember(0)] public uint sysState { get; set; }
+        [MessagePackMember(0)] public UInt32 sysState { get; set; }
 
         public GetSystemState() : base(108) { }
 

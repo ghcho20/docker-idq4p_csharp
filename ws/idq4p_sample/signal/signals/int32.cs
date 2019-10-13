@@ -19,7 +19,7 @@ using MsgPack.Serialization;
 
 namespace idq4p {
     public class BodyInt32 : Signal {
-        [MessagePackMember(0)] public Int32 value { get; set; }
+        [MessagePackMember(0)] public UInt32 value { get; set; }
 
         protected override MessagePackSerializer getSerializer() =>
             MessagePackSerializer.Get<BodyInt32>();

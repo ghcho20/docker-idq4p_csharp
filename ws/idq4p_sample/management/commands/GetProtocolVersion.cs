@@ -19,9 +19,9 @@ using MsgPack.Serialization;
 
 namespace idq4p {
     public class GetProtocolVersion : Command {
-        [MessagePackMember(0)] public uint maj { get; set; }
-        [MessagePackMember(1)] public uint min { get; set; }
-        [MessagePackMember(2)] public uint rev { get; set; }
+        [MessagePackMember(0)] public UInt32 maj { get; set; }
+        [MessagePackMember(1)] public UInt32 min { get; set; }
+        [MessagePackMember(2)] public UInt32 rev { get; set; }
 
         public GetProtocolVersion() : base(1) { }
 

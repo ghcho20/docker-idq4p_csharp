@@ -23,17 +23,17 @@ namespace idq4p {
     public sealed class CommandWrapper {
         public CommandWrapper() {} // Default Ctor is a MUST for Serializer Unpacker
 
-        public CommandWrapper(uint ID) { this.ID = ID; }
+        public CommandWrapper(UInt32 ID) { this.ID = ID; }
 
-        [MessagePackMember(0)] public uint ID { get; set; }
-        [MessagePackMember(1)] public uint direction { get; set; } = 1; // request
-        [MessagePackMember(2)] public List<ulong> cmd { get; set; } = new List<ulong>();
+        [MessagePackMember(0)] public UInt32 ID { get; set; }
+        [MessagePackMember(1)] public UInt32 direction { get; set; } = 1; // request
+        [MessagePackMember(2)] public List<Int64> cmd { get; set; } = new List<Int64>();
     }
 
     public abstract class Command {
-        private readonly uint ID = 1;
+        private readonly UInt32 ID = 1;
 
-        public Command(uint ID) => this.ID = ID;
+        public Command(UInt32 ID) => this.ID = ID;
 
         protected abstract MessagePackSerializer getSerializer();
 

@@ -23,7 +23,7 @@ namespace idq4p {
     public sealed class SignalWrapper {
         public SignalWrapper() {} // Default Ctor is a MUST for Serializer Unpacker
 
-        [MessagePackMember(0)] public Int32 ID { get; set; }
+        [MessagePackMember(0)] public UInt32 ID { get; set; }
         [MessagePackMember(1)] public List<UInt32> sig { get; set; } = new List<UInt32>();
     }
 

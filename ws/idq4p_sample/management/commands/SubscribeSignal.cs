@@ -19,7 +19,7 @@ using MsgPack.Serialization;
 
 namespace idq4p {
     public class SubscribeSignal : Command {
-        [MessagePackMember(0)] public uint sigID { get; set; }
+        [MessagePackMember(0)] public UInt32 sigID { get; set; }
 
         public SubscribeSignal() : base(10) =>
             this.sigID = (UInt32)(Signal.ID)Enum.Parse(typeof(Signal.ID), "OnCpuTemperature_NewValue", true);

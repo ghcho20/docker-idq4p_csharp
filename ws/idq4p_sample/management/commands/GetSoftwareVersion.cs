@@ -19,11 +19,11 @@ using MsgPack.Serialization;
 
 namespace idq4p {
     public class GetSoftwareVersion : Command {
-        [MessagePackMember(0)] public uint swID { get; set; }
-        [MessagePackMember(1)] public uint maj { get; set; }
-        [MessagePackMember(2)] public uint min { get; set; }
-        [MessagePackMember(3)] public uint rev { get; set; }
-        [MessagePackMember(4)] public ulong bld { get; set; }
+        [MessagePackMember(0)] public UInt32 swID { get; set; }
+        [MessagePackMember(1)] public UInt32 maj { get; set; }
+        [MessagePackMember(2)] public UInt32 min { get; set; }
+        [MessagePackMember(3)] public UInt32 rev { get; set; }
+        [MessagePackMember(4)] public Int64 bld { get; set; }
 
         private enum SWVer {
             CommunicatorService = 1,
@@ -33,7 +33,7 @@ namespace idq4p {
             FgpaConfiguration
         }
 
-        public GetSoftwareVersion() : base(2) => swID = (uint)SWVer.CommunicatorService;
+        public GetSoftwareVersion() : base(2) => swID = (UInt32)SWVer.CommunicatorService;
 
         public GetSoftwareVersion(string swID) : this() => this.swID = Convert.ToUInt32(swID);
 
