@@ -13,9 +13,9 @@
 using System;
 
 namespace idq4p {
-    public partial class Signal {
+    public abstract partial class Signal {
         public enum ID {
-            Heartbeat,
+            Heartbeat = 0,
             OnSystemState_Changed,
             OnUpdateSoftware_Progress,
             OnPowerUpComponentsState_Changed,

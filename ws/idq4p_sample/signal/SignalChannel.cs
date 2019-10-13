@@ -12,6 +12,10 @@
 
 using System;
 using System.Diagnostics;
+using System.Collections;
+using System.Collections.Generic;
+using System.Threading;
+
 using NetMQ;
 using NetMQ.Sockets;
 
@@ -25,8 +29,7 @@ namespace idq4p {
             return sock;
         }
 
-        public static void ReceiveSignal(this SubscriberSocket sock) {
-            Console.WriteLine($"subscribe to all signals");
+        public static void ReceiveSignal(this SubscriberSocket sock, int timo=9) {
             sock.SubscribeToAnyTopic();
 
             while (true) {

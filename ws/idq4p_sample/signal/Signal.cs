@@ -20,9 +20,30 @@ using System.Collections.Generic;
 using MsgPack.Serialization;
 
 namespace idq4p {
-    public partial class Signal {
+    public sealed class SignalWrapper {
+        public SignalWrapper() {} // Default Ctor is a MUST for Serializer Unpacker
+
+        [MessagePackMember(0)] public uint ID { get; set; }
+        [MessagePackMember(1)] public List<uint> cmd { get; set; } = new List<uint>();
+    }
+
+    public abstract partial class Signal {
+        private readonly ID eID;
+
+        public Signal(ID eID) {
+            this.eID = eID;
+        }
+
+        protected abstract MessagePackSerializer getSerializer();
+
         public static void UnpackFrame(byte[] frame) {
-            printToHex("rep", frame);
+            printToHex("sig frame", frame);
+            var swSerializer = MessagePackSerializer.Get<SignalWrapper>();
+            var stream = new MemoryStream(frame);
+            var sw = swSerializer.Unpack(stream);
+
+            ID eID = (ID)sw.ID;
+            Console.WriteLine($" signal[{eID}] received");
         }
 
         private static void printToHex(string ID, byte[] bytes) {

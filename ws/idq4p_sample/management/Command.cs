@@ -70,16 +70,20 @@ namespace idq4p {
             var stream = new MemoryStream(frame);
             var cwr = cwSerializer.Unpack(stream);
             Console.WriteLine($"  + n_cmds= {cwr.cmd.Count}");
-            byte[] baCmd = new byte[cwr.cmd.Count];
-            cwr.cmd.ForEach( a => baCmd[cwr.cmd.IndexOf(a)] = (byte)(0xff & a));
+            if (cwr.cmd.Count > 0) {
+                byte[] baCmd = new byte[cwr.cmd.Count];
+                cwr.cmd.ForEach( a => baCmd[cwr.cmd.IndexOf(a)] = (byte)(0xff & a));
 
-            printToHex("cmd", baCmd);
-            stream = new MemoryStream(baCmd);
-            var cmdSerializer = getSerializer();
-            //return (Command)cmdSerializer.Unpack(stream);
-            var cmd = (Command)cmdSerializer.Unpack(stream);
-            Set(cmd);
-            return cmd;
+                printToHex("cmd", baCmd);
+                stream = new MemoryStream(baCmd);
+                var cmdSerializer = getSerializer();
+                //return (Command)cmdSerializer.Unpack(stream);
+                var cmd = (Command)cmdSerializer.Unpack(stream);
+                Set(cmd);
+                return cmd;
+            } else {
+                return this;
+            }
         }
 
         public virtual Command Set(Command cmd) => this;
