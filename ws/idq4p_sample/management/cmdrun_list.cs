@@ -25,9 +25,9 @@ namespace idq4p {
             "GetSoftwareVersion 5",
             "GetBoardInformation 1",
             //"GetBoardInformation 2",
-            "GetBoardInformation 3",
-            //"GetBoardInformation 4",
-            //"GetBoardInformation 5",
+            //"GetBoardInformation 3",
+            "GetBoardInformation 4",
+            "GetBoardInformation 5",
             "SubscribeSignal", // default = OnCpuTemperature_NewValue
             "SubscribeSignal OnSystemState_Changed",
         };
