@@ -65,6 +65,6 @@ namespace idq4p {
             if (sock.ReqAndRep(cmd)) {
                 Console.WriteLine($"== {cmd.ToString()} ==");
             }
-    }
+        }
     }
 }

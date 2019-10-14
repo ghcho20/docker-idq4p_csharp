@@ -10,6 +10,8 @@
  * ANY USE, REPRODUCTION, OR TRANSFER EXCEPT AS PROVIDED IN SUCH AGREEMENT IS STRICTLY PROHIBITED.
  */
 
+using System;
+
 namespace idq4p {
     public enum SystemState {
         PoweredOff,
@@ -22,5 +24,12 @@ namespace idq4p {
         HandlingError,
         UpdatingSoftware,
         Zeroizing
+    }
+
+    public class Util {
+        public static void WriteBytes(string ID, byte[] bytes) {
+            string hex = BitConverter.ToString(bytes).Replace("-", "");
+            Console.WriteLine($"  + {ID}[{bytes.Length}]:{hex}");
+        }
     }
 }

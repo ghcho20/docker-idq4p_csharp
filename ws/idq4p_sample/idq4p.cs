@@ -28,6 +28,7 @@ namespace idq4p
                     break;
 
                 case "key":
+                    KeySubscriber.Run(args[0]);
                     break;
 
                 case "restart":
@@ -38,13 +39,6 @@ namespace idq4p
                     CommandRunner.CheckSystem(args[0]);
                     break;
             }
-        }
-    }
-
-    public class Util {
-        public static void WriteBytes(string ID, byte[] bytes) {
-            string hex = BitConverter.ToString(bytes).Replace("-", "");
-            Console.WriteLine($"  + {ID}[{bytes.Length}]:{hex}");
         }
     }
 }
