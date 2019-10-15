@@ -20,7 +20,8 @@ namespace idq4p
             Console.WriteLine("-----------------------------------------");
             switch(args[1]) {
                 case "mgmt":
-                    CommandRunner.Run(args[0]);
+                    //CommandRunner.Run(args[0]);
+                    MsgPackTest.FlatPacking();
                     break;
 
                 case "sig":
