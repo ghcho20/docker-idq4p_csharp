@@ -58,12 +58,17 @@ namespace idq4p {
         }
 
         public static void CheckSystem(string dstIp) {
-            using RequestSocket sock = ManagementChannel.Open(dstIp);
+            while (true) {
+                using RequestSocket sock = ManagementChannel.Open(dstIp);
 
-            Command cmd = new GetSystemState();
-            startOfCommand("Check System State");
-            if (sock.ReqAndRep(cmd)) {
-                Console.WriteLine($"== {cmd.ToString()} ==");
+                Command cmd = new GetSystemState();
+                startOfCommand("Check System State");
+                if (sock.ReqAndRep(cmd)) {
+                    Console.WriteLine($"== {cmd.ToString()} ==");
+                    break;
+                }
+                Console.WriteLine(">>> Retry");
+                Thread.Sleep(3000);
             }
         }
     }
