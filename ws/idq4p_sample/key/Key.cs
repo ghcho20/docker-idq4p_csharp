@@ -22,7 +22,7 @@ using MsgPack.Serialization;
 
 namespace idq4p {
     public class Key {
-        [MessagePackMember(0)] public StringBuilder ID { get; set; } = new StringBuilder();
+        [MessagePackMember(0)] public string ID { get; set; }
         [MessagePackMember(1)] public List<Byte> key { get; set; } = new List<Byte>();
         public static Key UnpackFrame(byte[] frame) {
             Util.WriteBytes("key frame", frame);
@@ -34,7 +34,7 @@ namespace idq4p {
         }
 
         public override string ToString() {
-            string rep = " key ID= " + ID.ToString();
+            string rep = " key ID= " + ID;
             if (ID.Length > 9) { // 9 is "heartbeat"
                 string kvHex = BitConverter.ToString(key.ToArray()).Replace("-", "");
                 rep += "\n     value = " + kvHex;
