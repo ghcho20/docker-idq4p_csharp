@@ -57,6 +57,14 @@ namespace idq4p {
             sock.ReqAndRep(cmd, 3);
         }
 
+        public static void PowerOff(string dstIp) {
+            using RequestSocket sock = ManagementChannel.Open(dstIp);
+
+            Command cmd = new PowerOff();
+            startOfCommand("Shut down System");
+            sock.ReqAndRep(cmd, 3);
+        }
+
         public static void CheckSystem(string dstIp) {
             while (true) {
                 using RequestSocket sock = ManagementChannel.Open(dstIp);

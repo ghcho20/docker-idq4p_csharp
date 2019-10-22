@@ -35,6 +35,10 @@ namespace idq4p
                     CommandRunner.Restart(args[0]);
                     break;
 
+                case "off":
+                    CommandRunner.PowerOff(args[0]);
+                    break;
+
                 case "check":
                     CommandRunner.CheckSystem(args[0]);
                     break;
