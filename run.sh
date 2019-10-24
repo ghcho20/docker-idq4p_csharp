@@ -15,7 +15,8 @@ fi
 echo "> Launch a container($CNAME)"
 WORKSPACE=${PWD}/ws
 WORKSPACE_MNT=/root/workspace
-DOCKER=docker
+DOCKER=$(which --skip-alias winpty 2> /dev/null)
+DOCKER="$DOCKER docker"
 $DOCKER run --rm --name $CNAME -v "$WORKSPACE:$WORKSPACE_MNT" -w "$WORKSPACE_MNT" -it $INAME
 
 exit
