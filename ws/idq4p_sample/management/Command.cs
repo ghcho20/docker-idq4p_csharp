@@ -30,6 +30,16 @@ namespace idq4p {
         [MessagePackMember(2)] public List<Int64> cmd { get; set; } = new List<Int64>();
     }
 
+    public sealed class CommandWrapperNoParam {
+        public CommandWrapperNoParam() {} // Default Ctor is a MUST for Serializer Unpacker
+
+        public CommandWrapperNoParam(UInt32 ID) { this.ID = ID; }
+
+        [MessagePackMember(0)] public UInt32 ID { get; set; }
+        [MessagePackMember(1)] public UInt32 direction { get; set; } = 1; // request
+        [MessagePackMember(2)] public UInt32[] noParam { get; set; } = new UInt32[] { 0x90 }; // zero-length array for Cpp compatibility
+    }
+
     public abstract class Command {
         private readonly UInt32 ID = 1;
 
@@ -38,20 +48,25 @@ namespace idq4p {
         protected abstract MessagePackSerializer getSerializer();
 
         public virtual byte[] PackFrame() {
-            var cw = new CommandWrapper(ID);
             var stream = new MemoryStream();
             var cmdSerializer = getSerializer();
-            if (cmdSerializer != null) {
+            if (cmdSerializer == null) {
+                var cw = new CommandWrapperNoParam(ID);
+                var cwSerializer = MessagePackSerializer.Get<CommandWrapperNoParam>();
+                cwSerializer.Pack(stream, cw);
+            } else {
+                var cw = new CommandWrapper(ID);
                 cmdSerializer.Pack(stream, this);
                 byte[] baCmd = stream.ToArray();
                 Util.WriteBytes("cmd", baCmd);
 
                 foreach(byte c in baCmd) cw.cmd.Add(c);
                 Console.WriteLine($"  + n_cmds = {cw.cmd.Count}");
+
+                var cwSerializer = MessagePackSerializer.Get<CommandWrapper>();
+                stream.SetLength(0);
+                cwSerializer.Pack(stream, cw);
             }
-            var cwSerializer = MessagePackSerializer.Get<CommandWrapper>();
-            stream.SetLength(0);
-            cwSerializer.Pack(stream, cw);
 
             byte[] fr = stream.ToArray();
             Util.WriteBytes("req", fr);
